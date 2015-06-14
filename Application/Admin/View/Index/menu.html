@@ -1,13 +1,29 @@
 <div class="easyui-accordion" data-options="fit:true,border:false">
-    <div title="系统设置" data-options="selected:true" style="padding:10px;">
-        <div style="padding:10px" onclick="addTab('系统设置1','../System/user');">系统设置1</div>
-        <div style="padding:10px" onclick="addTab('系统设置2','../System/index');">系统设置2</div>
-
-    </div>
-    <div title="Title2" style="padding:10px;">
-        content2
-    </div>
-    <div title="Title3" style="padding:10px">
-        content3
-    </div>
+    <foreach name="menu" item="item">
+        <div title='{$item["title"]}' style="padding:10px;">
+            <ul class="easyui-tree" id='mt_{$item["id"]}' ></ul>
+        </div>
+    </foreach>
 </div>
+<input type="hidden" id="hfMenu" value='{$menuJson}'/>
+<script>
+    $.parser.onComplete = function(){
+        var menus = $.parseJSON($("#hfMenu").val());
+        //加载菜单树
+        $(menus).each(function (i,val) {
+            $("#mt_" + val.id).tree({data:val.children,animate:true,lines:false,onClick: function (node) {
+                //父节点单击展开或收起
+                if(!$(this).tree('isLeaf', node.target)){
+                    if (node.state == 'closed'){
+                        $(this).tree('expand', node.target);
+                    }else{
+                        $(this).tree('collapse', node.target);
+                    }
+                }else if(node.attributes.url != ""){
+                    //子节点单击打开新Tab页面
+                    addTab(node.text,node.attributes.url);
+                }
+            }});
+        });
+    };
+</script>

@@ -10,7 +10,7 @@
     <load href='__PUBLIC__/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js' />
 </head>
 <body>
-<div class="easyui-dialog" title="登录" data-options="iconCls:'icon-tip',closable: false" style="width:420px;height:200px;padding:10px">
+<div class="easyui-dialog" title="登录" data-options="iconCls:'icon-tip',closable: false" style="width:420px;height:200px;padding:10px;">
     <div style="padding:10px 60px 20px 60px;">
         <form id="ff" class="easyui-form" method="post" data-options="novalidate:true" action="__APP__/Admin/Index/login">
             <table cellpadding="5">
@@ -39,6 +39,7 @@
             success:function(data){
                 //alert(data);
                 var d = $.parseJSON(data);
+                //var d = eval("(" +data+ ")");
                 if(d.state==1){
                     window.location= d.url;
                 }else{
@@ -58,6 +59,9 @@
             }
         });
     };
+    $(document).ready(function(){
+        $(".textbox-text").get(0).focus();
+    });
 </script>
 </body>
 </html>
