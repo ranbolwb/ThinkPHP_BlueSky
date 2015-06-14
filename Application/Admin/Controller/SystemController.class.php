@@ -7,14 +7,18 @@
  */
 
 namespace Admin\Controller;
+
 use Think\Controller;
 
-class SystemController extends Controller {
-    public function Index(){
+class SystemController extends Controller
+{
+    public function Index()
+    {
         $this->display();
     }
 
-    public function User(){
+    public function User()
+    {
         $this->display();
     }
 }
