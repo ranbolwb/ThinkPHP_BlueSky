@@ -9,7 +9,6 @@
 <script>
     $.parser.onComplete = function(){
         var menus = $.parseJSON($("#hfMenu").val());
-        alert($("#hfMenu").val());
         $(menus).each(function (i,val) {
             $("#mt_" + val.id).tree({data:val.children,animate:true,lines:false,onClick: function (node) {
 
