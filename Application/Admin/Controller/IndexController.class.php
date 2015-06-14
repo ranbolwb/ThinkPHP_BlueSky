@@ -83,14 +83,21 @@ class IndexController extends Controller {
         $data = session("user");
         //校验原密码
         if($data["password"] == I("post.oldpwd")){
-            $data["password"] = I("post.newpwd");
-            $user = M("user");
-            $user->field("password")->save($data);
-            session("user.password",$data["password"]);
-            $result["state"] = 1;
-            $result["msg"] = "修改密码成功！";
-            //$this->ajaxReturn($result);
-            echo(json_encode($result));
+            if(I("post.newpwd") != ""){
+                $data["password"] = I("post.newpwd");
+                $user = M("user");
+                $user->field("password,id")->save($data);
+                session("user.password",$data["password"]);
+                $result["state"] = 1;
+                $result["msg"] = "修改密码成功！";
+                //$this->ajaxReturn($result);
+                echo(json_encode($result));
+            }else{
+                $result["state"] = 0;
+                $result["msg"] = "请输入新密码！";
+                //$this->ajaxReturn($result);
+                echo(json_encode($result));
+            }
         }else{
             $result["state"] = 0;
             $result["msg"] = "原密码不正确！";
