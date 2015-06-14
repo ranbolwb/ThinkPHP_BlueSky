@@ -9,10 +9,10 @@
 <script>
     $.parser.onComplete = function(){
         var menus = $.parseJSON($("#hfMenu").val());
-        //加载菜单树
+        alert($("#hfMenu").val());
         $(menus).each(function (i,val) {
             $("#mt_" + val.id).tree({data:val.children,animate:true,lines:false,onClick: function (node) {
-                //父节点单击展开或收起
+
                 if(!$(this).tree('isLeaf', node.target)){
                     if (node.state == 'closed'){
                         $(this).tree('expand', node.target);
@@ -20,7 +20,7 @@
                         $(this).tree('collapse', node.target);
                     }
                 }else if(node.attributes.url != ""){
-                    //子节点单击打开新Tab页面
+
                     addTab(node.text,node.attributes.url);
                 }
             }});

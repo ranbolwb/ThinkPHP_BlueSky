@@ -43,7 +43,6 @@ class IndexController extends Controller {
     }
 
     private function menuTree($list){
-        $list = session("menu");
         $menu = array();
         foreach ($list as $item) {
             if(strlen($item["code"]) == 2){
@@ -62,7 +61,6 @@ class IndexController extends Controller {
     }
 
     public function getMenuChild($code,$list){
-        $list = session("menu");
         $menu = array();
         foreach ($list as $item) {
             if(strlen($item["code"]) == strlen($code) + 2 && substr($item["code"],0,strlen($code)) == $code) {
