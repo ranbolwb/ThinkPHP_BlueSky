@@ -8,14 +8,28 @@
     <title>欢迎光临</title>
 
     <!-- Bootstrap -->
-    <load href='__PUBLIC__/bootstrap-3.3.4-dist/css/bootstrap.min.css' />
+    <load href='__PUBLIC__/bootstrap-3.3.4-dist/css/bootstrap.min.css'/>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-    <load href='__PUBLIC__/bootstrap-3.3.4-dist/js/html5shiv.min.js' />
-    <load href='__PUBLIC__/bootstrap-3.3.4-dist/js/respond.min.js' />
+    <load href='__PUBLIC__/bootstrap-3.3.4-dist/js/html5shiv.min.js'/>
+    <load href='__PUBLIC__/bootstrap-3.3.4-dist/js/respond.min.js'/>
     <![endif]-->
-
+    <style>
+        label.valid {
+            width: 24px;
+            height: 24px;
+            background: url(__PUBLIC__/img/valid.png) center center no-repeat;
+            display: inline-block;
+            text-indent: -9999px;
+        }
+        label.error {
+            font-weight: bold;
+            color: red;
+            padding: 2px 8px;
+            margin-top: 2px;
+        }
+    </style>
     <!--<link rel="stylesheet" href="../../../../Public/bootstrap-3.3.4-dist/css/bootstrap.css">-->
 </head>
 <body>
@@ -25,20 +39,20 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <form class="form-horizontal" action="__APP__/Home/Index/doLogin" method="post">
+                <form id="loginForm" class="form-horizontal" action="__APP__/Home/Index/doLogin" method="post">
                     <fieldset>
                         <div>
-                            <legend class="h1 text-center">登录</legend>
+                            <legend class="text-center"><h1>登录</h1></legend>
                         </div>
                         <div class="form-group">
                             <label for="name" class="col-sm-3 control-label">用户名</label>
-                            <div class="col-sm-9">
+                            <div class="controls col-sm-8">
                                 <input type="text" class="form-control" id="name" name="name" placeholder="呢称/邮箱/手机">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="password" class="col-sm-3 control-label">密码</label>
-                            <div class="col-sm-9">
+                            <div class="controls col-sm-8">
                                 <input type="password" class="form-control" id="password" name="password" placeholder="密码">
                             </div>
                         </div>
@@ -57,22 +71,46 @@
                     </fieldset>
                 </form>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
 </div>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <load href='__PUBLIC__/bootstrap-3.3.4-dist/js/jquery-1.11.3.min.js' />
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <load href='__PUBLIC__/bootstrap-3.3.4-dist/js/bootstrap.js' />
 
-    <script>
-        $(document).ready(function(){
-            $("#myModal").show();
-            //模态窗口垂直居中
-            var $modal_dialog = $(".modal-dialog")
-            var m_top = ( $(window).height() - $modal_dialog.height() )/2
-            $modal_dialog.css({'margin': m_top + 'px auto'})
+<load href='__PUBLIC__/bootstrap-3.3.4-dist/js/jquery-1.11.3.min.js'/>
+<load href='__PUBLIC__/bootstrap-3.3.4-dist/js/bootstrap.js'/>
+<load href='__PUBLIC__/bootstrap-3.3.4-dist/js/jquery.validate.min.js'/>
+<script>
+    $(document).ready(function () {
+        $("#myModal").show();
+        //模态窗口垂直居中
+        var $modal_dialog = $(".modal-dialog")
+        var m_top = ( $(window).height() - $modal_dialog.height() ) / 2
+        $modal_dialog.css({'margin': m_top + 'px auto'})
+
+        //验证表单
+        $('#loginForm').validate({
+            rules: {
+                name: {minlength: 2, required: true},
+                password: {minlength: 2, required: true}
+            }, messages: {
+                name: {
+                    required: "请输入用户名",
+                    minlength: "请输入至少2个字符"
+                },
+                password: {
+                    required: "请输入密码",
+                    minlength: "请输入至少2个字符"
+                }
+            }, highlight: function (element) {
+                $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+            }, success: function (element) {
+                element.text('OK!').addClass('valid col-sm-1').closest('.form-group').removeClass('has-error').addClass('has-success');
+            }
         });
-    </script>
+    });
+
+
+</script>
 </body>
 </html>
