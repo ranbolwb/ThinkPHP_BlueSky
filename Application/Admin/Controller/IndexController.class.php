@@ -127,8 +127,8 @@ class IndexController extends Controller
         }
         // 最后彻底销毁session.
         session_destroy();
-        $this->display("index");
-        //$this->redirect("index");
+        //$this->display("index");
+        $this->redirect("index");
     }
 
     /*

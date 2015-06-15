@@ -1149,6 +1149,10 @@ if (typeof jQuery === 'undefined') {
       paddingLeft:  !this.bodyIsOverflowing && modalIsOverflowing ? this.scrollbarWidth : '',
       paddingRight: this.bodyIsOverflowing && !modalIsOverflowing ? this.scrollbarWidth : ''
     })
+    //模态窗口垂直居中
+    var $modal_dialog = this.$element.children().eq(0)
+    var m_top = ( $(window).height() - $modal_dialog.height() )/2
+    $modal_dialog.css({'margin': m_top + 'px auto'})
   }
 
   Modal.prototype.resetAdjustments = function () {
