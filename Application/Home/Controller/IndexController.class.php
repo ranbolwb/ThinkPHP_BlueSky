@@ -7,6 +7,7 @@ class IndexController extends Controller {
     }
 
     public function login(){
+        layout(false);
         $this->display();
     }
 

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>欢迎光临</title>
+
+    <!-- Bootstrap -->
+    <load href='__PUBLIC__/bootstrap-3.3.4-dist/css/bootstrap.min.css'/>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <load href='__PUBLIC__/bootstrap-3.3.4-dist/js/html5shiv.min.js'/>
+    <load href='__PUBLIC__/bootstrap-3.3.4-dist/js/respond.min.js'/>
+    <![endif]-->
+    <load href='__PUBLIC__/bootstrap-3.3.4-dist/js/jquery-1.11.3.min.js'/>
+    <load href='__PUBLIC__/bootstrap-3.3.4-dist/js/bootstrap.js'/>
+
+    <!--<link rel="stylesheet" href="../../../Public/bootstrap-3.3.4-dist/css/bootstrap.css">-->
+</head>
+<body>
+<div class="container">
+    <div id="header"></div>
+    <div id="main" style="display: none;">
+        {__CONTENT__}
+    </div>
+    <div id="footer" style="display: none;"></div>
+</div>
+<script>
+    $(document).ready(function () {
+        //加载头部
+        $.ajax({
+            type: "GET",
+            url: "__APP__/Home/Public/header",
+            dataType: "html",
+            success: function(data){
+                $('#header').html(data);
+                $("#main").css("display","block");
+                $("#footer").css("display","block");
+            }
+        });
+        //加载尾部
+        $.ajax({
+            type: "GET",
+            url: "__APP__/Home/Public/footer",
+            dataType: "html",
+            success: function(data){
+                $('#footer').html(data);
+            }
+        });
+    });
+</script>
+</body>
+</html>
