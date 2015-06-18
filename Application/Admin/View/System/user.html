@@ -1,7 +1,8 @@
+<!--<link rel="stylesheet" href="../../../../Public/jquery-easyui-1.4.1/themes/default/easyui.css" />-->
 <table id="dg" class="easyui-datagrid" title="用户管理" style="height:auto;width: 95%;"
        data-options="
 				iconCls: 'icon-edit',
-				singleSelect: true,
+				singleSelect: false,
 				toolbar: '#tb',
 				url: '__APP__/Admin/System/userList',
 				method: 'get',
@@ -12,6 +13,7 @@
 			">
     <thead>
     <tr>
+        <th data-options="field:'ck',checkbox:true"></th>
         <th data-options="field:'id',align:'center'">ID</th>
         <th data-options="field:'nickname',editor:'textbox'" sortable="true">呢称</th>
         <th data-options="field:'email',editor:'textbox'">邮箱</th>
@@ -27,18 +29,25 @@
 </table>
 
 <div id="tb" style="height:auto">
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">添加用户</a>
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeit()">删除用户</a>
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">保存</a>
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="reject()">取消</a>
-    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="getChanges()">GetChanges</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"
+       onclick="append()">添加用户</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true"
+       onclick="removeit()">删除用户</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true"
+       onclick="accept()">保存</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true"
+       onclick="reject()">取消</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true"
+       onclick="getChanges()">GetChanges</a>
 </div>
 
 <script type="text/javascript">
     var editIndex = undefined;
-    function endEditing(){
-        if (editIndex == undefined){return true}
-        if ($('#dg').datagrid('validateRow', editIndex)){
+    function endEditing() {
+        if (editIndex == undefined) {
+            return true
+        }
+        if ($('#dg').datagrid('validateRow', editIndex)) {
             $('#dg').datagrid('endEdit', editIndex);
             editIndex = undefined;
             return true;
@@ -46,9 +55,9 @@
             return false;
         }
     }
-    function onClickRow(index){
-        if (editIndex != index){
-            if (endEditing()){
+    function onClickRow(index) {
+        if (editIndex != index) {
+            if (endEditing()) {
                 $('#dg').datagrid('selectRow', index)
                         .datagrid('beginEdit', index);
                 editIndex = index;
@@ -57,22 +66,37 @@
             }
         }
     }
-    function append(){
-        if (endEditing()){
-            $('#dg').datagrid('appendRow',{state:'1'});
-            editIndex = $('#dg').datagrid('getRows').length-1;
+    function append() {
+        if (endEditing()) {
+            $('#dg').datagrid('appendRow', {state: '1'});
+            editIndex = $('#dg').datagrid('getRows').length - 1;
             $('#dg').datagrid('selectRow', editIndex)
                     .datagrid('beginEdit', editIndex);
+            $('#dg').datagrid('uncheckRow', editIndex);
         }
     }
-    function removeit(){
-        if (editIndex == undefined){return}
-        $('#dg').datagrid('cancelEdit', editIndex)
-                .datagrid('deleteRow', editIndex);
-        editIndex = undefined;
+    function removeit() {
+//        if (editIndex == undefined) {
+//            return
+//        }
+//        $('#dg').datagrid('cancelEdit', editIndex)
+//                .datagrid('deleteRow', editIndex);
+//        editIndex = undefined;
+        $dg = $("#dg");
+        var selections = $dg.datagrid("getSelections");
+        if(selections.length == 0){
+            $.messager.alert("提示", "请选择要删除的会员！", "info");
+            return;
+        }
+        var i= selections.length-1;
+        for(;i>=0;i--){
+            var ri = $dg.datagrid("getRowIndex",selections[i]);
+            $dg.datagrid('deleteRow', ri);
+        }
+        $dg.datagrid("clearSelections");
     }
-    function accept(){
-        if (endEditing()){
+    function accept() {
+        if (endEditing()) {
             if ($('#dg').datagrid('getChanges').length) {
                 $dg = $('#dg');
                 var inserted = $dg.datagrid('getChanges', "inserted");
@@ -90,26 +114,28 @@
                     effectRow["updated"] = JSON.stringify(updated);
                 }
 
-                $.post("__APP__/Admin/System/userCommit", effectRow, function(rsp) {
-                    if(rsp.state == 1){
+                $.post("__APP__/Admin/System/userCommit", effectRow, function (rsp) {
+                    if (rsp.state == 1) {
                         //$.messager.alert("提示", "提交成功！");
-                        $.messager.alert("提示", "提交成功！插入：" + rsp.inserts + "条，更新：" + rsp.updates + "条,删除：" + rsp.deletes + "条");
-                        $dg.datagrid('acceptChanges');
-                    }else{
-                        $.messager.alert("提示", rsp.msg);
+                        $.messager.alert("提示", "提交成功！插入：" + rsp.inserts + "条，更新：" + rsp.updates + "条,删除：" + rsp.deletes + "条", "info", function () {
+                            $dg.datagrid('acceptChanges');
+                            $dg.datagrid("reload");
+                        });
+                    } else {
+                        $.messager.alert("提示", rsp.msg, "error");
                     }
-                }, "JSON").error(function() {
-                    $.messager.alert("提示", "提交错误了！");
+                }, "JSON").error(function () {
+                    $.messager.alert("提示", "提交错误了！", "error");
                 });
             }
         }
     }
-    function reject(){
+    function reject() {
         $('#dg').datagrid('rejectChanges');
         editIndex = undefined;
     }
-    function getChanges(){
+    function getChanges() {
         var rows = $('#dg').datagrid('getChanges');
-        alert(rows.length+' rows are changed!');
+        alert(rows.length + ' rows are changed!');
     }
 </script>
