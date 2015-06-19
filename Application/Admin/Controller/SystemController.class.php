@@ -25,14 +25,25 @@ class SystemController extends Controller
 
     public function userList()
     {
-        $page = I("get.page");
-        $rows = I("get.rows");
-        $sort = I("get.sort") == null ? "id" : I("get.sort");
-        $order = I("get.order") == null ? "asc" : I("get.order");
+        $where["nickname"] = array("like","%".I("post.txtnickname")."%");
+        $where["email"] = array("like","%".I("post.txtemail")."%");
+        $where["mobile"] = array("like","%".I("post.txtmobile")."%");
+        $where["truename"] = array("like","%".I("post.txttruename")."%");
+        if(I("post.txtscore1") != "")
+            $where["score"] = array("egt",I("post.txtscore1"));
+        if(I("post.txtscore2") != "")
+            $where["score"] = array("elt",I("post.txtscore2"));
+
+        $page = I("post.page");
+        $rows = I("post.rows");
+        $sort = I("post.sort") == null ? "id" : I("post.sort");
+        $order = I("post.order") == null ? "asc" : I("post.order");
         $user = M("user");
-        $list = $user->order($sort,$order)->page($page,$rows)->select();
-        $count = $user->count();
-        $json = "{\"total\":".$count.",\"rows\":".json_encode($list)."}";
+        $list = $user->where($where)->order($sort." ".$order)->page($page,$rows)->select();
+        $count = $user->where($where)->count();
+        $jsonencode = json_encode($list);
+        $jsonencode = $jsonencode == 'null' ? "{}" : $jsonencode;
+        $json = "{\"total\":".$count.",\"rows\":".$jsonencode."}";
         exit($json);
     }
 
@@ -53,6 +64,8 @@ class SystemController extends Controller
             //插入
             foreach($inserts as $insert)
             {
+                $insert["createtime"] = date('Y-m-d H:i:s', time());
+                $insert["lasttime"] = $insert["createtime"];
                 $user->add($insert);
             }
             //更新
@@ -63,7 +76,7 @@ class SystemController extends Controller
             //删除
             foreach($deletes as $delete)
             {
-                $user->delete($delete);
+                $user->delete($delete["id"]);
             }
 
             $user->commit();
