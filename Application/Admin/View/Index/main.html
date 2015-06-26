@@ -45,14 +45,22 @@
 <script>
     function addTab(title,url){
         if(!$('#divTabs').tabs('exists',title)) {
+//            $('#divTabs').tabs('add', {
+//                title: title,
+//                href: url,
+//                closable: true
+//            });
+            var content = '<div style="overflow: hidden;width: 100%;height: 100%;"><iframe scrolling="no" frameborder="0"  src="'+url+'" style="width:100%;height:100%;"></iframe></div>';
             $('#divTabs').tabs('add', {
                 title: title,
-                href: url,
-                closable: true
+                content:content,
+                closable: true,
+                fit:true
             });
         }else{
             $('#divTabs').tabs('select',title).selected();
         }
+
     }
     function changPassword(){
         if(document.getElementById("divChangePassword") == null) {
