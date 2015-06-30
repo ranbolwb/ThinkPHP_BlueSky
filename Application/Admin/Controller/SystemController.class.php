@@ -32,7 +32,7 @@ class SystemController extends Controller
 //        if(I("post.txtscore1") != "")
 //            $where["score"] = array("egt",I("post.txtscore1"));
 //        if(I("post.txtscore2") != "")
-//            $where["score"] = array("elt",I("post.txtscore2"));
+//            $where["score"] = array("elt",I("post.txtscore2")); 
 
         $where["nickname"] = array("like",":nickname");
         $bind[":nickname"] = "%".I("post.txtnickname")."%";
