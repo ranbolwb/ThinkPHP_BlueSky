@@ -25,22 +25,39 @@ class SystemController extends Controller
 
     public function userList()
     {
-        $where["nickname"] = array("like","%".I("post.txtnickname")."%");
-        $where["email"] = array("like","%".I("post.txtemail")."%");
-        $where["mobile"] = array("like","%".I("post.txtmobile")."%");
-        $where["truename"] = array("like","%".I("post.txttruename")."%");
-        if(I("post.txtscore1") != "")
-            $where["score"] = array("egt",I("post.txtscore1"));
-        if(I("post.txtscore2") != "")
-            $where["score"] = array("elt",I("post.txtscore2"));
+//        $where["nickname"] = array("like","%".I("post.txtnickname")."%");
+//        $where["email"] = array("like","%".I("post.txtemail")."%");
+//        $where["mobile"] = array("like","%".I("post.txtmobile")."%");
+//        $where["truename"] = array("like","%".I("post.txttruename")."%");
+//        if(I("post.txtscore1") != "")
+//            $where["score"] = array("egt",I("post.txtscore1"));
+//        if(I("post.txtscore2") != "")
+//            $where["score"] = array("elt",I("post.txtscore2"));
+
+        $where["nickname"] = array("like",":nickname");
+        $bind[":nickname"] = "%".I("post.txtnickname")."%";
+        $where["email"] = array("like",":email");
+        $bind[":email"] = "%".I("post.txtemail")."%";
+        $where["mobile"] = array("like",":mobile");
+        $bind[":mobile"] = "%".I("post.txtmobile")."%";
+        $where["truename"] = array("like",":truename");
+        $bind[":truename"] = "%".I("post.txttruename")."%";
+        if(I("post.txtscore1") != "") {
+            $where["score"] = array("egt", ":score1");
+            $bind[":score1"] = I("post.txtscore1");
+        }
+        if(I("post.txtscore2") != ""){
+            $where["score"] = array("elt",":score2");
+            $bind[":score2"] = I("post.txtscore2");
+        }
 
         $page = I("post.page");
         $rows = I("post.rows");
         $sort = I("post.sort") == null ? "id" : I("post.sort");
         $order = I("post.order") == null ? "asc" : I("post.order");
         $user = M("user");
-        $list = $user->where($where)->order($sort." ".$order)->page($page,$rows)->select();
-        $count = $user->where($where)->count();
+        $list = $user->where($where)->bind($bind)->order($sort." ".$order)->page($page,$rows)->select();
+        $count = $user->where($where)->bind($bind)->count();
         $jsonencode = json_encode($list);
         $jsonencode = $jsonencode == 'null' ? "{}" : $jsonencode;
         $json = "{\"total\":".$count.",\"rows\":".$jsonencode."}";

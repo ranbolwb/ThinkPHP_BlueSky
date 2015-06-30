@@ -5,20 +5,22 @@
                 <table cellpadding="5">
                     <tr>
                         <td>呢称：</td>
-                        <td><input class="easyui-textbox" type="text" name="txtnickname" /></td>
+                        <td><input class="easyui-textbox" type="text" name="txtnickname"/></td>
                         <td>邮箱：</td>
-                        <td><input class="easyui-textbox" type="text" name="txtemail" /></td>
+                        <td><input class="easyui-textbox" type="text" name="txtemail"/></td>
                         <td>手机：</td>
                         <td><input class="easyui-textbox" type="text" name="txtmobile"/></td>
                         <td>姓名：</td>
                         <td><input class="easyui-textbox" type="text" name="txttruename"/></td>
                         <td rowspan="2">
-                            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="searchUsers()">查询</a>
+                            <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search"
+                               onclick="searchUsers()">查询</a>
                         </td>
                     </tr>
                     <tr>
-                        <td>积分</td>
-                        <td colspan="7"><input class="easyui-numberbox" type="text" name="txtscore1" />-<input class="easyui-numberbox" type="text" name="txtscore2" /></td>
+                        <td>积分：</td>
+                        <td colspan="7"><input class="easyui-numberbox" type="text" name="txtscore1"/>-<input
+                                class="easyui-numberbox" type="text" name="txtscore2"/></td>
                     </tr>
                 </table>
             </form>
@@ -43,14 +45,21 @@
                 <th data-options="field:'ck',checkbox:true"></th>
                 <th data-options="field:'id',align:'center'" sortable="true">ID</th>
                 <th data-options="field:'nickname',editor:'textbox'" sortable="true">呢称</th>
-                <th data-options="field:'email',editor:{type:'textbox',options:{validType:'email'}}" sortable="true">邮箱</th>
-                <th data-options="field:'mobile',editor:{type:'numberbox',options:{precision:0}}" sortable="true">手机</th>
+                <th data-options="field:'email',editor:{type:'textbox',options:{validType:'email'}}" sortable="true">
+                    邮箱
+                </th>
+                <th data-options="field:'mobile',editor:{type:'numberbox',options:{precision:0}}" sortable="true">手机
+                </th>
                 <th data-options="field:'truename',editor:'textbox'" sortable="true">姓名</th>
                 <th data-options="field:'password',editor:{type:'textbox'}" sortable="true">密码</th>
-                <th data-options="field:'score',align:'right',editor:{type:'numberbox',options:{precision:0}}" sortable="true">积分</th>
+                <th data-options="field:'score',align:'right',editor:{type:'numberbox',options:{precision:0}}"
+                    sortable="true">积分
+                </th>
                 <th data-options="field:'createtime',editor:'datetimebox'" sortable="true">注册时间</th>
                 <th data-options="field:'lasttime',editor:'datetimebox'" sortable="true">最后登录时间</th>
-                <th data-options="field:'state',align:'center',editor:{type:'checkbox',options:{on:'1',off:'0'}}" sortable="true">状态</th>
+                <th data-options="field:'state',align:'center',editor:{type:'checkbox',options:{on:'1',off:'0'}}"
+                    sortable="true">状态
+                </th>
             </tr>
             </thead>
         </table>
@@ -77,14 +86,14 @@
         if ($('#dg').datagrid('validateRow', editIndex)) {
             //验证  邮箱、手机、呢称必须填一个
             $dg = $('#dg');
-            var nickname = $($dg.datagrid('getEditor', {index:editIndex,field:'nickname'}).target).val();
-            var email = $($dg.datagrid('getEditor', {index:editIndex,field:'email'}).target).val();
-            var mobile = $($dg.datagrid('getEditor', {index:editIndex,field:'mobile'}).target).val();
-            if(nickname == "" && email == "" && mobile == "") {
+            var nickname = $($dg.datagrid('getEditor', {index: editIndex, field: 'nickname'}).target).val();
+            var email = $($dg.datagrid('getEditor', {index: editIndex, field: 'email'}).target).val();
+            var mobile = $($dg.datagrid('getEditor', {index: editIndex, field: 'mobile'}).target).val();
+            if (nickname == "" && email == "" && mobile == "") {
                 $.messager.alert("提示", "亲，呢称、邮箱、手机必须填一个哦！", "error");
                 return false;
             }
-            $dg.datagrid('endEdit', editIndex).datagrid("unselectRow",editIndex);
+            $dg.datagrid('endEdit', editIndex).datagrid("unselectRow", editIndex);
             editIndex = undefined;
             return true;
         } else {
@@ -134,14 +143,19 @@
         //删除当前勾选行
         $dg = $("#dg");
         var checks = $dg.datagrid("getChecked");
-        if(checks.length == 0){
+        if (checks.length == 0) {
             $.messager.alert("提示", "请选择要删除的会员！", "info");
             return;
         }
-        var i= checks.length-1;
-        for(;i>=0;i--){
-            var ri = $dg.datagrid("getRowIndex",checks[i]);
-            $dg.datagrid('deleteRow', ri);
+        var i = checks.length - 1;
+        for (; i >= 0; i--) {
+            var ri = $dg.datagrid("getRowIndex", checks[i]);
+            if (ri == editIndex) {
+                $dg.datagrid('endEdit', ri).datagrid('deleteRow', ri);
+                editIndex = undefined;
+            }else{
+                $dg.datagrid('deleteRow', ri);
+            }
         }
     }
     function accept() {
@@ -187,11 +201,10 @@
         var rows = $('#dg').datagrid('getChanges');
         alert(rows.length + ' rows are changed!');
     }
-    $.fn.serializeObject = function()
-    {
+    $.fn.serializeObject = function () {
         var o = {};
         var a = this.serializeArray();
-        $.each(a, function() {
+        $.each(a, function () {
             if (o[this.name]) {
                 if (!o[this.name].push) {
                     o[this.name] = [o[this.name]];
@@ -203,7 +216,7 @@
         });
         return o;
     };
-    function searchUsers(){
-        $("#dg").datagrid("reload",$('#form_search').serializeObject());
+    function searchUsers() {
+        $("#dg").datagrid("reload", $('#form_search').serializeObject());
     }
 </script>
